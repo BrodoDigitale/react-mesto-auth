@@ -4,7 +4,11 @@
 @import url(./blocks/page/page.css);
 @import url(./blocks/content/content.css);
 @import url(./blocks/header/header.css);
+@import url(./blocks/header/__container/header__container.css);
 @import url(./blocks/header/__logo/header__logo.css);
+@import url(./blocks/header/__button/header__button.css);
+@import url(./blocks/header/__button/_exit/header__button_exit.css);
+@import url(blocks/header/__text-wrapper/header__text-wrapper.css);
 @import url(./blocks/profile/profile.css);
 @import url(./blocks/profile/__about/profile__about.css);
 @import url(./blocks/profile/__avatar-button/profile__avatar-button.css);
@@ -32,7 +36,6 @@
 @import url(./blocks/transition/transition.css);
 @import url(./blocks/popup/popup.css);
 @import url(./blocks/popup/_opened/popup_opened.css);
-@import url(./blocks/popup/__container/popup__container.css);
 @import url(./blocks/popup/__close-button/popup__close-button.css);
 @import url(./blocks/edit-form/edit-form.css);
 @import url(./blocks/edit-form/__error/edit-form__error.css);
@@ -41,6 +44,15 @@
 @import url(./blocks/edit-form/__input/_type_error/edit-form__input_type-error.css);
 @import url(./blocks/edit-form/__button/edit-form__button.css);
 @import url(./blocks/edit-form/__button/_disabled/edit-form__button_disabled.css);
+@import url(./blocks/popup/__img-container/popup__img-container.css);
 @import url(./blocks/popup/__img/popup__img.css);
 @import url(./blocks/popup/__title/popup__title.css);
 @import url(./blocks/popup/_show-image/popup_show-image.css);
+@import url(./blocks/popup/__notification-container/popup__notification-container.css);
+@import url(./blocks/popup/__notification-img/popup__notification-img.css);
+@import url(./blocks/popup/notification-title/popup__notification-title.css);
+@import url(./blocks/auth-form/auth-form.css);
+@import url(./blocks/auth-form/__header/auth-form__header.css);
+@import url(./blocks/auth-form/__input/auth-form__input.css);
+@import url(./blocks/auth-form/__button/auth-form__button.css);
+@import url(./blocks/auth-form/__link/auth-form__link.css);

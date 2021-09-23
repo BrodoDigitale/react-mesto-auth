@@ -12,7 +12,7 @@ const avatarRef = React.useRef();
     function handleSubmit(e) {
         e.preventDefault();
         props.onUpdateAvatar({
-          avatar: avatarRef.current.value
+        avatar: avatarRef.current.value
         });
         e.target.reset()
       } 
