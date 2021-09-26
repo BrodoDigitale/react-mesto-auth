@@ -1,5 +1,5 @@
 //import './App.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 import {api} from '../utils/api'
 import { Header } from "./Header";
@@ -11,9 +11,11 @@ import { EditProfilePopup } from './EditProfilePopup';
 import { EditAvatarPopup } from './EditAvatarPopup';
 import { AddPlacePopup } from './AddPlacePopup';
 import { Login } from './Login';
+import { login, register } from "../utils/apiAuth";
 import { Register } from './Register';
 import { ProtectedRoute } from './ProtectedRoute';
 import { checkTokenValidity } from '../utils/apiAuth';
+import { InfoToolTip } from "./InfoToolTip";
 
 export function App() {
     const history = useHistory();
@@ -21,7 +23,10 @@ export function App() {
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
     const [selectedCard, setSelectedCard] = React.useState({name: '', link: ''})
-    //стейт емейла юзера
+    //Стейты для infoToolTip
+    const [isInfoToolOpen, setIsInfoToolOpen ] = React.useState(false);
+    const [isRegistrationSuccessful, setIsRegistrationSuccessful] = React.useState(false)
+    //стейт емейла и пароля юзера
     const [userEmail, setUserEmail] = React.useState('email@mail.com');
     //стейт авторизации юзера
     const [loggedIn, setIsLoggedIn] = React.useState(false);
@@ -50,6 +55,7 @@ export function App() {
         setIsEditAvatarPopupOpen(false)
         setIsEditProfilePopupOpen(false)
         setIsAddPlacePopupOpen(false)
+        setIsInfoToolOpen(false)
         setSelectedCard({name: '', link: ''})
     }
     //обновление инфо о пользователе
@@ -82,30 +88,43 @@ export function App() {
     }, []);
     //Функция лайков 
     function handleCardLike(card) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-        renderCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-    });
-    }
+        // Снова проверяем, есть ли уже лайк на этой карточке
+        const isLiked = card.likes.some(i => i._id === currentUser._id);
+        // Отправляем запрос в API и получаем обновлённые данные карточки
+        api.changeLikeCardStatus(card._id, isLiked)
+        .then((newCard) => {
+            renderCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+        })
+        .catch(err => console.log(err))
+        }
     //Удаление карточки
     function handleCardDelete(card) {
         api.deleteCard(card._id)
         .then(() => {
-        renderCards((state) => state.filter((c) => c._id !== card._id))
-        });
+            renderCards((state) => state.filter((c) => c._id !== card._id))
+        })
+        .catch(err => console.log(err))
     }
     //Добавление карточки
     function handleAddPlaceSubmit(data) {
         api.addCard(data)
         .then((newCard)=>{
-        renderCards([newCard, ...cards]);
-        closeAllPopups() 
+            renderCards([newCard, ...cards]);
+            closeAllPopups() 
         })
         .catch(err => console.log(err));
     }
+    //Функция удаления при нажатии на Escape
+    useEffect(() => {
+        const closeByEscape = (e) => {
+          if (e.key === 'Escape') {
+            closeAllPopups();
+          }
+        }
+        document.addEventListener('keydown', closeByEscape)
+        //!!clean up функция через return
+        return () => document.removeEventListener('keydown', closeByEscape)
+    }, [])
 
     //Проверка токена при загрузке страницы 
     React.useEffect(() => {
@@ -118,6 +137,7 @@ export function App() {
                     setUserEmail(res.data.email)
                 }
             }) 
+            .catch(err => console.log(err))
         }
       }, []);
     //Переадресация на главную страницу, если пользователь уже залогинен
@@ -127,20 +147,42 @@ export function App() {
       }, [loggedIn]);
 
      //Логин
-    function handleLogin(token){
-        setIsLoggedIn(true);
-        localStorage.setItem('jwt', token);
-    } 
+    function handleLogin(data) {
+        if (!data.email || !data.password){
+            return;
+          }
+        login(data)
+          .then((res) => { 
+            if (!res) throw new Error('Неправильные имя пользователя или пароль');
+            if (res) {
+            setUserEmail(data.email)
+            setIsLoggedIn(true);
+            localStorage.setItem('jwt', res.token);
+            }
+            })
+            .catch((err) => (console.log(err)))
+     }
+    
     //Логаут
     function handleLogout() {
         localStorage.removeItem('jwt');
         setIsLoggedIn(false);
     }
+    
     //Регистрация
-    function onRegister(registeredUser) {
-    if(registeredUser) {
-        history.push('/sign-in')
-        }
+    function handleRegister(data) {
+        register(data)
+            .then((res) => {
+            if(res.data) {
+                setIsInfoToolOpen(true)
+                setIsRegistrationSuccessful(true)
+                history.push('/sign-in')
+                } else {
+                setIsInfoToolOpen(true)
+                setIsRegistrationSuccessful(false)
+                }
+            })
+            .catch((err) => (console.log(err)))
     }
 
   return (
@@ -168,7 +210,20 @@ export function App() {
             />
             <Footer />
             </div>
-            <section className="popups">
+            </>
+            </Route>
+            <Route path="/sign-up">
+                <Register 
+                onRegister={handleRegister}
+                />
+            </Route>
+            <Route path="/sign-in">
+                <Login 
+                onLogin={handleLogin}
+                />
+            </Route>
+        </Switch>
+        <section className="popups">
             <EditAvatarPopup 
             isOpen={isEditAvatarPopupOpen} 
             onClose={closeAllPopups} 
@@ -188,21 +243,12 @@ export function App() {
             card={selectedCard}
             onClose={closeAllPopups}
             />
+            <InfoToolTip 
+            isOpen={isInfoToolOpen} 
+            isRegistrationSuccessful={isRegistrationSuccessful}
+            onClose={closeAllPopups} 
+            />
             </section>
-            </>
-            </Route>
-            <Route path="/sign-up">
-                <Register 
-                handleRegistration={onRegister}
-                />
-            </Route>
-            <Route path="/sign-in">
-                <Login 
-                handleLogin={handleLogin}
-                setUserEmail={setUserEmail}
-                />
-            </Route>
-        </Switch>
     </CurrentUserContext.Provider>
   );
 }
