@@ -174,15 +174,15 @@ export function App() {
         register(data)
             .then((res) => {
             if(res.data) {
-                setIsInfoToolOpen(true)
                 setIsRegistrationSuccessful(true)
                 history.push('/sign-in')
-                } else {
-                setIsInfoToolOpen(true)
-                setIsRegistrationSuccessful(false)
                 }
             })
-            .catch((err) => (console.log(err)))
+            .catch(() => {
+                setIsRegistrationSuccessful(false)
+                
+            })
+            .finally(() => {setIsInfoToolOpen(true)})
     }
 
   return (
