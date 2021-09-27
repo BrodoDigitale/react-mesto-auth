@@ -178,10 +178,7 @@ export function App() {
                 history.push('/sign-in')
                 }
             })
-            .catch(() => {
-                setIsRegistrationSuccessful(false)
-                
-            })
+            .catch(() => {setIsRegistrationSuccessful(false)})
             .finally(() => {setIsInfoToolOpen(true)})
     }
 
