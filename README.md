@@ -1,15 +1,16 @@
 ## Mesto Project with authorization and registration
 
-Functionality is similar to instagram and allows to download and share photos of different places, like posts or dislike previously liked posts.
+Instagram-like one-page web application allowing to download, share and delete posts with photos, like posts or dislike previously liked posts.
 
 ![](public/mesto_480px.gif)  
 
 ### Implemented functionality:
-Authorization and registration of users,
-User profile editing,
-Creation of new posts,
-Deletion of posts,
-Liking and disliking of posts.
+- Rendering of cards
+- Registration and authorization of users
+- User profile editing
+- Creation of new posts
+- Deletion of posts
+- Liking and disliking of posts
 
 ### Project location: https://mesto.sensi.nomoredomains.rocks
 
