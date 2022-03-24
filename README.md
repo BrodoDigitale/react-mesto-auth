@@ -2,6 +2,8 @@
 
 Functionality is similar to instagram and allows to download and share photos of different places, like posts or dislike previously liked posts.
 
+![](public/mesto_480px.gif)  
+
 ### Implemented functionality:
 Authorization and registration of users,
 User profile editing,
@@ -23,4 +25,3 @@ Liking and disliking of posts.
 - Express
 - Mongo DB
 
-![](public/mesto_480px.gif)
