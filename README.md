@@ -19,3 +19,5 @@ React
 NodeJs
 Express
 Mongo DB
+
+![](public/mesto_480px.gif)
